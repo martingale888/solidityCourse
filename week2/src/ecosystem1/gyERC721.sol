@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import {ERC721} from "openzeppelin-contracts/token/ERC721/ERC721.sol";
-import {ERC721Royalty} from "openzeppelin-contracts/token/ERC721/extensions/ERC721Royalty.sol";
-import {BitMaps} from "openzeppelin-contracts/utils/structs/BitMaps.sol";
-import {Ownable2Step} from "openzeppelin-contracts/access/Ownable2Step.sol";
+import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import {ERC721Royalty} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Royalty.sol";
+import {BitMaps} from "@openzeppelin/contracts/utils/structs/BitMaps.sol";
+import {Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
+import {MerkleProof} from "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 contract gyERC721 is ERC721Royalty, Ownable2Step {
-    using BitMaps for Bitmaps.BitMap;
+    using BitMaps for BitMaps.BitMap;
 
+    mapping(address => uint256) private _lastWithdraw;
     uint256 private _currentSupply;
     uint256 public constant presalePrice=0.5 ether;
     uint256 public constant regularPrice=0.5 ether;
@@ -18,7 +20,7 @@ contract gyERC721 is ERC721Royalty, Ownable2Step {
 
     constructor(bytes32 _merkleRoot) ERC721("gyToken","GT"){
         _setDefaultRoyalty(owner(), 250);
-        merkleRoot = _merkltRoot;
+        merkleRoot = _merkleRoot;
     }
 
     //who update or create merkleRoot?
@@ -29,11 +31,11 @@ contract gyERC721 is ERC721Royalty, Ownable2Step {
     function withdraw() external onlyOwner{
         (bool success) = owner().call{value:address(this).balance}("");     //do we need to update balance in contract gyERC721 like ticketMap?
         require(success);
-        lastWithdraw[msg.sender] = block.timestamp;
+        _lastWithdraw[msg.sender] = block.timestamp;
     }
 
     function royaltyInfo(uint256 tokenId,uint256 salePrice) public view override returns (address, uint256){
-        require(_exists(tokenId),"token do not exist");
+        require(_exists(tokenId),"token do not exist");         //why _exists not recognized in ERC721
         return super.royaltyInfo(tokenId, salePrice);
     }
 
@@ -50,7 +52,7 @@ contract gyERC721 is ERC721Royalty, Ownable2Step {
         require(msg.value ==presalePrice,"price need to be presalePrice");
         require(!_isClaimed(ticketNum),"ticketNum is already used");
 
-        byte32 leaf = keccak256(abi.encodePacked(to, ticketNum, tokenId));
+        bytes32 leaf = keccak256(abi.encodePacked(to, ticketNum, tokenId));
         require(MerkleProof.verify(proof,merkleRoot,leaf),"invalid merkle proof");
         
         _currentSupply++;
