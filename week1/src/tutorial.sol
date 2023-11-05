@@ -355,4 +355,100 @@ contract ExampleContract {
         return false;
     }
 
+    uint256 internal x1;
+
+    function setX(uint256 newX) public {
+        x1 = newX;
+    }
+
+    function getX() public view returns (uint256){
+        return x1;
+    }
+
+    uint256[] public myArray;
+
+    function setMyArray(uint256[] calldata newArray) public {
+        myArray = newArray;
+    }
+
+    function addToArray(uint256 newItem) public {
+        myArray.push(newItem);
+    }
+
+    function removeFromArray() public {
+        myArray.pop();
+    }
+
+    function getLength() public view returns(uint256){
+        return myArray.length;
+    }
+
+    function getEntireArray() public view returns(uint256[] memory){
+        return myArray;
+    }
+
+    function removeAt(uint256 index) public {
+        delete myArray[index];
+    }
+
+    function popAndSwap(uint256 index) public {
+        uint256 lastValue = myArray[myArray.length-1];
+        myArray[index] = lastValue;
+        myArray.pop();
+    }
+
+    mapping(uint256 => uint256) public myMapping;
+
+    function setMapping(uint256 key, uint256 value) public{
+        myMapping[key] = value;
+    }
+
+    function getValue(uint256 key) public view returns( uint256) {
+        return myMapping[key];
+    }
+
+    mapping(uint256 => address) public mapToAddress;
+
+    function setAddMapping(uint256 key, address newValue) public{
+        mapToAddress[key] = newValue;
+    }
+
+    //this mapping is private by default. no nestedMap function created by default.
+    mapping(uint256 => mapping(uint256 => uint256))  nestedMap;
+
+    function setNestedMap(uint256 key1, uint256 key2, uint256 finalValue) public {
+        nestedMap[key1][key2] = finalValue;
+    }
+
+    function getNestedMap(uint256 key1, uint256 key2) public view returns(uint256){
+        return nestedMap[key1][key2];
+    }
+
+    function whoami() public view returns (address) {
+        return msg.sender;
+    }
+
+    address public banker = 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2;
+
+    mapping(address => uint256) public balances;
+
+    function setSomeoneBalance(address owner, uint256 amount) public {
+        if (msg.sender == banker){
+            balances[owner] = amount;
+        }
+    }
+
+    //sender : 0x617F2E2fD72FD9D5503197092aC168c91465E7f2
+    //receiver: 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db
+    function transferTokenBetweenAddress(address sender, address receiver, uint256 amount) public payable{
+        if (msg.sender == banker){
+            balances[sender] -= amount;
+            balances[receiver] += amount;
+        }
+    }
+
+    //0xB302F922B24420f3A3048ddDC4E2761CE37Ea098
+    function whoami2() public view returns( address ) {
+        return address(this);
+    }
 }
