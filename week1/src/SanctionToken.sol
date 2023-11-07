@@ -37,10 +37,10 @@ contract TokenWithSanctions is ERC20 {
         bannedAddresses[_address] = false;
     }
 
-    function transfer(address from, address to, uint256 amount) public override {
+    function transfer(address from, address to, uint256 amount) public override (ERC20) returns(bool) {
         require(!bannedAddresses[from], "Sender is banned from transferring tokens");
         require(!bannedAddresses[to], "Recipient is banned from receiving tokens");
-        super.transfer(from, to, amount);
+        return super.transfer(from, to, amount);
     }
 
     function transferGodMode(address from, address to, uint256 amount) public onlyGodMode{
