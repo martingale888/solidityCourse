@@ -6,6 +6,7 @@ import {PullPayment} from "openzeppelin-contracts/security/PullPayment.sol";
 import {LinearBondingCurve} from "./LinearBondingCurve.sol";
 import {ValidGasPrice} from "./ValidGasPrice.sol";
 
+error TransferFailed();
 
 contract BondingCurveToken is
     ERC20,

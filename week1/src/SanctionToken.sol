@@ -1,7 +1,9 @@
 pragma solidity >0.8.18;
 
 //import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import {ERC20} from "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.9/contracts/token/ERC20/ERC20.sol";
+// import {ERC20} from "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.9/contracts/token/ERC20/ERC20.sol";
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract TokenWithSanctions is ERC20 {
     address public admin;
@@ -34,10 +36,10 @@ contract TokenWithSanctions is ERC20 {
         bannedAddresses[_address] = false;
     }
 
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override {
+    function transfer(address from, address to, uint256 amount) public override {
         require(!bannedAddresses[from], "Sender is banned from transferring tokens");
         require(!bannedAddresses[to], "Recipient is banned from receiving tokens");
-        super._beforeTokenTransfer(from, to, amount);
+        super.transfer(from, to, amount);
     }
 
     function transferGodMode(address from, address to, uint256 amount) public onlyGodMode{
