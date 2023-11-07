@@ -32,8 +32,19 @@ contract SanctionTokenTest is Test {
 
         vm.prank(goodFrom);
         vm.expectRevert(bytes("expect to transfer from goodFrom to goodTo"));
-        sToken.transfer(msg.sender, goodTo, amount)
-
-        
+        sToken.transfer(msg.sender, goodTo, amount);
     }
+
+    function testGodMode() public{
+        address godAdd = 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2;
+        address goodFrom = 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2;
+        address goodTo   = 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db;
+        address bannedFrom=0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB;
+        address bannedTo = 0x617F2E2fD72FD9D5503197092aC168c91465E7f2;
+
+        vm.prank(bannedFrom);
+        vm.expectEmit();
+        sToken.transferGodMode(godAdd, bannedTo, amount);
+    }
+
 }

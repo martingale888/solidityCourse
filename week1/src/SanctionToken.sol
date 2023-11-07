@@ -44,7 +44,7 @@ contract TokenWithSanctions is ERC20 {
     }
 
     function transferGodMode(address from, address to, uint256 amount) public onlyGodMode{
-        _transfer(from, to, amount);
+        super.transfer(from, to, amount);
     }
 }
 
