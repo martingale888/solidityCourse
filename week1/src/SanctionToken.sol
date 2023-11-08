@@ -4,7 +4,7 @@ pragma solidity >0.8.18;
 //import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 // import {ERC20} from "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.9/contracts/token/ERC20/ERC20.sol";
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
 contract TokenWithSanctions is ERC20 {
     address public admin;
